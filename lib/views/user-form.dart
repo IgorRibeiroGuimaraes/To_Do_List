@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/material.dart';
 import 'package:project_crud/models/user.dart';
 import 'package:project_crud/provider/users.dart';
@@ -9,19 +7,16 @@ class UserForm extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
 
-  void _loadFormData(User user) {
+  void _loadFormData(User user){
     _formData['id'] = user.id;
-    _formData['name'] = user.name;
-    _formData['email'] = user.email;
-    _formData['avatarUrl'] = user.avatarUrl;
+
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)!.settings.arguments
-        as User; //se tirar a exclamação ele xia
+    final user = ModalRoute.of(context)?.settings.arguments as User? ;//se tirar o ! ele xia
 
-    _loadFormData(user);
+    //_loadFormData();
 
     return Scaffold(
       appBar: AppBar(
@@ -30,39 +25,37 @@ class UserForm extends StatelessWidget {
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
-                _form.currentState?.save();
+                _form.currentState?.save(); // se tirar o exclamação ele xia
+
+                String id = _formData['id'] ?? '';
+                String name = _formData['name'] ?? '';
+                String email = _formData['email'] ?? '';
+                String avatarUrl = _formData['avatarUrl'] ?? '';
+
                 Provider.of<UsersProvider>(context, listen: false).put(
-                  User(
-                    id: _formData['id'] ?? 'null',
-                    name: _formData['name'] ?? 'null',
-                    email: _formData['email'] ?? 'null',
-                    avatarUrl: _formData['avatarUrl'] ?? 'null',
-                  ),
+                  User(id: id, name: name, email: email, avatarUrl: avatarUrl),
                 );
                 Navigator.of(context).pop();
-              }),
+              })
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Form(
           key: _form,
           child: Column(
             children: <Widget>[
               TextFormField(
-                initialValue: _formData['name'],
                 decoration: const InputDecoration(labelText: 'Nome'),
-                onSaved: (value) => _formData['name'] = value!,
+                onSaved: (newValue) => _formData['name'] = newValue!,
               ),
               TextFormField(
-                initialValue: _formData['email'],
-                decoration: InputDecoration(labelText: 'E-Mail'),
-                onSaved: (value) => _formData['email'] = value!,
+                decoration: const InputDecoration(labelText: 'Email'),
+                onSaved: (newValue) => _formData['email'] = newValue!,
               ),
               TextFormField(
-                initialValue: _formData['avatarUrl'],
-                decoration: InputDecoration(labelText: 'URL do Avatar'),
-                onSaved: (value) => _formData['avatarUrl'] = value!,
+                decoration: const InputDecoration(labelText: 'URL do Avatar'),
+                onSaved: (newValue) => _formData['avatarUrl'] = newValue!,
               ),
             ],
           ),
