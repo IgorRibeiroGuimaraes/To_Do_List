@@ -25,7 +25,7 @@ class UsersProvider with ChangeNotifier {
     }
 
     if (user.id != null &&
-        !user.id.trim().isNotEmpty &&
+        user.id.trim().isNotEmpty &&
         _items.containsKey(user.id)) {
       _items.update(
           user.id,
@@ -38,23 +38,23 @@ class UsersProvider with ChangeNotifier {
     } else {
       final id = Random().nextDouble().toString();
       _items.putIfAbsent(
-          id,
-          () => User(
-                id: id,
-                name: user.name,
-                email: user.email,
-                avatarUrl: user.avatarUrl,
-              ));
+        id,
+        () => User(
+          id: id,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        ),
+      );
     }
 
-     notifyListeners();
+    notifyListeners();
   }
 
-    void remove(User user){
-      if(user != null && user.id != null){
-        _items.remove(user.id);
-        notifyListeners();
-      }
+  void remove(User user) {
+    if (user != null && user.id != null) {
+      _items.remove(user.id);
+      notifyListeners();
     }
-
+  }
 }
