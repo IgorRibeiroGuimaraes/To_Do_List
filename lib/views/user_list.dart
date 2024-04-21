@@ -7,26 +7,31 @@ import 'package:provider/provider.dart';
 class UserList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final UsersProvider users = Provider.of(context);
+    final UsersProvider users = Provider.of<UsersProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista de Usuário'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-             Navigator.of(context).pushNamed(
-              AppRoutes.USER_FORM
-             );
-            },
-            icon: Icon(Icons.add),
-          ),
-        ],
+        title: Text('Lista de Tarefas'),
       ),
       body: ListView.builder(
-        itemCount: users.count,
-        itemBuilder: (ctx, i) => UserTile(users.byIndex(i)),
+        itemCount: users.count + 1, 
+        itemBuilder: (ctx, i) {
+          if (i == 0) {
+            return Padding(padding: EdgeInsets.only(top: 50)); 
+          }
+        
+          return UserTile(users.byIndex(i - 1));
+        },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(AppRoutes.USER_FORM);
+        },
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.blue,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop, 
     );
   }
 }
+

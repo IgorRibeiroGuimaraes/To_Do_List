@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:project_crud/models/user.dart';
+import 'package:intl/intl.dart'; // Importe o pacote intl para formatar a data
+import 'package:project_crud/models/doing.dart';
 import 'package:project_crud/provider/users.dart';
 import 'package:provider/provider.dart';
 
-class UserForm extends StatelessWidget {
-  final _form = GlobalKey<FormState>();
-  final Map<String, String> _formData = {};
+class UserForm extends StatefulWidget {
+  @override
+  _UserFormState createState() => _UserFormState();
+}
 
-  void _loadFormData(User? user) { // Temos 2 páginas no nosso app, a primeira e a de cadastro, correto? Quando clicamos em cadastrar um novo usuario, as informações das fields vão estar vazias.
-    if (user != null) {
-      _formData['id'] = user.id;
-      _formData['name'] = user.name;
-      _formData['email'] = user.email;
-      _formData['avatarUrl'] = user.avatarUrl;
+class _UserFormState extends State<UserForm> {
+  final _form = GlobalKey<FormState>();
+  final Map<String, dynamic> _formData = {};
+  DateTime? _selectedDate;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final Doing? doing = ModalRoute.of(context)?.settings.arguments as Doing?;
+    if (doing != null) {
+      _formData['id'] = doing.id;
+      _formData['name'] = doing.name;
+      _formData['dueDate'] =
+          _selectedDate; // Garante que o formData esteja correto.
     }
+  }
+
+
+
+  void _saveForm() {
+    _form.currentState?.save();
+
+    String id = _formData['id'] ?? '';
+    String name = _formData['name'] ?? '';
+    DateTime dueDate = _formData['dueDate'] ??
+        DateTime.now(); // Certifique-se de usar _formData['dueDate']
+
+    Provider.of<UsersProvider>(context, listen: false).put(
+      Doing(id: id, name: name),
+    );
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context)?.settings.arguments
-        as User?; //se tirar o ! ele xia
-
-    if (user != null) {
-      _loadFormData(user); // ai como to chamando ele aqui pra dentro do app, precisa chamar um if pra ter ctz q o usuario n é null pq se for essa porra n funciona e é isso ai
-    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Formulário de Usuário'),
+        title: Text(
+            _formData.containsKey('id') ? 'Editar Tarefa' : 'Adicionar Tarefa'),
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.save),
-              onPressed: () {
-                _form.currentState?.save(); // se tirar o interrogação ele xia
-
-                String id = _formData['id'] ?? '';
-                String name = _formData['name'] ?? '';
-                String email = _formData['email'] ?? '';
-                String avatarUrl = _formData['avatarUrl'] ?? '';
-
-                Provider.of<UsersProvider>(context, listen: false).put(
-                  User(id: id, name: name, email: email, avatarUrl: avatarUrl),
-                );
-                Navigator.of(context).pop();
-              })
+            icon: const Icon(Icons.save),
+            onPressed: _saveForm,
+          ),
         ],
       ),
       body: Padding(
@@ -50,21 +60,14 @@ class UserForm extends StatelessWidget {
         child: Form(
           key: _form,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
                 initialValue: _formData['name'],
-                decoration: const InputDecoration(labelText: 'Nome'),
-                onSaved: (newValue) => _formData['name'] = newValue!,
-              ),
-              TextFormField(
-                initialValue: _formData['email'],
-                decoration: const InputDecoration(labelText: 'Email'),
-                onSaved: (newValue) => _formData['email'] = newValue!,
-              ),
-              TextFormField(
-                initialValue: _formData['avatarUrl'],
-                decoration: const InputDecoration(labelText: 'URL do Avatar'),
-                onSaved: (newValue) => _formData['avatarUrl'] = newValue!,
+                decoration: const InputDecoration(labelText: 'Nome da Tarefa'),
+                onSaved: (newValue) {
+                  if (newValue != null) _formData['name'] = newValue;
+                },
               ),
             ],
           ),

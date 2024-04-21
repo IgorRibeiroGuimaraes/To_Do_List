@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:project_crud/models/user.dart';
+import 'package:intl/intl.dart';
+import 'package:project_crud/models/doing.dart';
 import 'package:project_crud/provider/users.dart';
 import 'package:project_crud/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
 class UserTile extends StatelessWidget {
-  final User user;
+  final Doing doing;
 
-  const UserTile(this.user, {super.key});
+  const UserTile(this.doing, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final avatar = user.avatarUrl.isEmpty
-        ? const CircleAvatar(child: Icon(Icons.person))
-        : CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl));
     return ListTile(
-      leading: avatar,
-      title: Text(user.name),
-      subtitle: Text(user.email),
+      title: Text(doing.name),
       trailing: Container(
         width: 100,
         child: Row(
@@ -28,7 +24,7 @@ class UserTile extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   AppRoutes.USER_FORM,
-                  arguments: user,
+                  arguments: doing,
                 );
               },
             ),
@@ -36,7 +32,8 @@ class UserTile extends StatelessWidget {
               icon: Icon(Icons.delete),
               color: Colors.red,
               onPressed: () {
-                Provider.of<UsersProvider>(context, listen: false).remove(user);
+                Provider.of<UsersProvider>(context, listen: false)
+                    .remove(doing);
               },
             ),
           ],
