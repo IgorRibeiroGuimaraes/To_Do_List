@@ -1,6 +1,6 @@
 # To-Do List Flutter App
 
-Este é um projeto de To-Do List desenvolvido em Flutter, realizado em colaboração com um aluno como parte de uma atividade sugerida pelo professor.
+Este é um projeto de To-Do List desenvolvido em Flutter, realizado em colaboração com o Matheus Andrade (https://github.com/MathSantana1) parte de uma atividade sugerida pelo professor.
 
 ## Descrição do Projeto
 
